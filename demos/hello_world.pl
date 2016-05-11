@@ -6,7 +6,6 @@ use warnings;
 use Graphics::VTK qw(:python);
 use Graphics::VTK::Util qw(:python);
 use Graphics::VTK::Util::Colors qw(:python);
-use Data::Dumper;
 
 my $tomato = vtk::util::colors::tomato();
 

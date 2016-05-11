@@ -3,7 +3,11 @@ use File::Temp;
 use File::Slurp qw(read_file);
 
 
-BEGIN { use_ok('Graphics::VTK', ':python' ) }
+BEGIN { 
+	use_ok('Graphics::VTK', ':python' ); 
+	use_ok('Graphics::VTK::Util', ':python' );
+	use_ok('Graphics::VTK::Util::Colors', ':python');
+}
 
 
 my $temp_png = File::Temp->new();
@@ -54,9 +58,10 @@ ok( -s $temp_png->filename, 'image file is not empty' );
 my $contents = read_file($temp_png, bindmode => ':raw' );
 ok( $contents =~ /^\x{89}PNG/, 'has PNG header' );
 
-#system('display', $temp_png->filename); # DEBUG
+my $variant;
+ok($variant = vtk::util::vtkVariant(), 'Created vtkVariant');
 
-#$iren->Start();
-
+my $tomato;
+ok($tomato = vtk::util::colors::tomato(), 'Color definitions ok');
 
 done_testing;

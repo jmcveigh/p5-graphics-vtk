@@ -7,7 +7,7 @@ sub import {
 	my ($self, $opt) = @_;
 	if( $opt eq ':python' ) {
 		eval {
-			require Graphics::VTK::Backend::InlinePython;
+			require Graphics::VTK::Util::Backend::InlinePython;
 			*vtk::util::AUTOLOAD = \&Graphics::VTK::Util::Backend::InlinePython::AUTOLOAD;
 			1;
 		} or do {
