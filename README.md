@@ -1,3 +1,3 @@
 # p5-graphics-vtk
 
-Perl bindings to the Visualization toolkit (VTK)
+:chart::bar_chart: Perl bindings to the Visualization Toolkit (VTK)
