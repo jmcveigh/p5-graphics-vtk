@@ -4,16 +4,6 @@ import vtk
  
 filename = "example1_python.stl"
  
-sphereSource = vtk.vtkSphereSource()
-sphereSource.Update()
- 
-# Write the stl file to disk
-stlWriter = vtk.vtkSTLWriter()
-stlWriter.SetFileName(filename)
-stlWriter.SetInputConnection(sphereSource.GetOutputPort())
-stlWriter.Write()
- 
-# Read and display for verification
 reader = vtk.vtkSTLReader()
 reader.SetFileName(filename)
  

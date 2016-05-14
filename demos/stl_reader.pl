@@ -1,22 +1,11 @@
 #!/bin/perl
-
 use strict;
 use warnings;
-
+ 
 use Graphics::VTK qw(:python);
-
+ 
 my $filename = "example1_perl.stl";
  
-my $sphereSource = vtk::vtkSphereSource();
-$sphereSource->Update();
- 
-# Write the stl file to disk
-my $stlWriter = vtk::vtkSTLWriter();
-$stlWriter->SetFileName($filename);
-$stlWriter->SetInputConnection($sphereSource->GetOutputPort());
-$stlWriter->Write();
- 
-# Read and display for verification
 my $reader = vtk::vtkSTLReader();
 $reader->SetFileName($filename);
  
@@ -27,7 +16,7 @@ my $actor = vtk::vtkActor();
 $actor->SetMapper($mapper);
  
 # Create a rendering window and renderer
-my $ren = vtk::vtkRenderer();
+my $ren = vtk->vtkRenderer();
 my $renWin = vtk::vtkRenderWindow();
 $renWin->AddRenderer($ren);
  
