@@ -3,11 +3,7 @@
 use strict;
 use warnings;
 
-use Graphics::VTK qw(:python);
-use Graphics::VTK::Util qw(:python);
-use Graphics::VTK::Util::Colors qw(:python);
-
-my $tomato = vtk::util::colors::tomato();
+use Graphics::VTK;
 
 my $cylinder = vtk::vtkCylinderSource();
 $cylinder->SetResolution(8);
@@ -23,7 +19,6 @@ $cylinderMapper->SetInputConnection($cylinder->GetOutputPort());
 # Here we set its color and rotate it -22.5 degrees.
 my $cylinderActor = vtk::vtkActor();
 $cylinderActor->SetMapper($cylinderMapper);
-$cylinderActor->GetProperty()->SetColor($tomato);
 $cylinderActor->RotateX(30.0);
 $cylinderActor->RotateY(-45.0);
  
