@@ -4,10 +4,13 @@ use strict;
 use warnings;
 
 use Graphics::VTK;
+use Graphics::VTK::Util::Colors;
+
+my $tomato = vtk::util::colors::tomato();
 
 my $cylinder = vtk::vtkCylinderSource();
 $cylinder->SetResolution(8);
- 
+
 # The mapper is responsible for pushing the geometry into the graphics
 # library. It may also do color mapping, if scalars or other
 # attributes are defined.
@@ -19,6 +22,7 @@ $cylinderMapper->SetInputConnection($cylinder->GetOutputPort());
 # Here we set its color and rotate it -22.5 degrees.
 my $cylinderActor = vtk::vtkActor();
 $cylinderActor->SetMapper($cylinderMapper);
+$cylinderActor->GetProperty()->SetColor($tomato);
 $cylinderActor->RotateX(30.0);
 $cylinderActor->RotateY(-45.0);
  

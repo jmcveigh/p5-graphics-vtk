@@ -46,7 +46,7 @@ sub AUTOLOAD {
     my $result = Inline::Python::py_eval("(float(${call}[0]),float(${call}[1]),float(${call}[2]))", 0);
 
 	# memory arrangement (perl)
-	my @r = (sprintf("%.4f", $result->[0]),sprintf("%.4f", $result->[1]),sprintf("%.4f", $result->[2]));
+	my @r = (sprintf("%.6f", $result->[0]),sprintf("%.6f", $result->[1]),sprintf("%.6f", $result->[2]));
 
 	return $result;
 }
