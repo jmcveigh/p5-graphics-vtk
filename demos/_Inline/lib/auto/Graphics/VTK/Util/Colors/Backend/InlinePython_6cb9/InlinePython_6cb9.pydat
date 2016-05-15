@@ -1,0 +1,46 @@
+namespace : %
+    classes : %
+        vtkProxy : @
+            __str__
+            __getattr__
+            __repr__
+            __init__
+        vtkUtilColorsProxy : @
+            __str__
+            __getattr__
+            __repr__
+            __init__
+    functions : @
+filtered : <<EOV
+from vtk.util.colors import *
+
+class vtkUtilColorsProxy(object):
+  def __init__(self, target):
+    self._target = target
+    self._majorVersion = vtk.vtkVersion().GetVTKMajorVersion()
+
+  def __str__(self):
+    return str(self._target)
+
+  def __repr__(self):
+    return repr(self._target)
+
+  def __getattr__(self, aname):
+    target = self._target
+    f = getattr(target, aname)
+
+    def wrap_it(*args):
+      u_args_l = []; # final arguments
+      for arg in args:
+        # unwrap vtkProxy for calling
+        arg = getattr( arg, '_target', arg )
+        u_args_l.append( arg )
+      u_args = tuple(u_args_l)
+
+      # proxy the return value
+      return vtkUtilColorsProxy(f(*u_args))
+
+    return wrap_it
+
+my_vtk_util_colors = vtkUtilColorsProxy(vtk.util.colors)
+EOV
