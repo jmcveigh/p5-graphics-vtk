@@ -109,6 +109,8 @@ sub build_pentagonal_prism {
 	return($uGrid);
 }
  
+use Data::Dumper;
+
 sub build_polyhedron {
 	# Make a regular dodecahedron. It consists of twelve regular pentagonal
     # faces with three faces meeting at each vertex.
@@ -138,7 +140,7 @@ sub build_polyhedron {
     $points->InsertNextPoint(0.982247, -0.713644, -1.58931);
  
     # Dimensions are [numberOfFaces][numberOfFaceVertices]
-    my @dodechedronFace = [
+    my $dodechedronFace = [
         [0, 1, 2, 3, 4],
         [0, 5, 10, 6, 1],
         [1, 6, 11, 7, 2],
@@ -156,57 +158,55 @@ sub build_polyhedron {
     my $dodechedronFacesIdList = vtk::vtkIdList();
     
     # Number faces that make up the cell.
-    
-    $dodechedronFacesIdList->InsertNextId(scalar $numberOfFaces);
+	
+    $dodechedronFacesIdList->InsertNextId($numberOfFaces);
 
-    for my $face (@dodechedronFace) {
-		my @face_tmp = @{$face};
+    for my $face (@{$dodechedronFace}) {
+		# die Dumper($face);
 	    # Number of points in the face == numberOfFaceVertices
-        $dodechedronFacesIdList->InsertNextId(scalar @face_tmp);
-        
-        for my $i (@face_tmp) {
+        $dodechedronFacesIdList->InsertNextId(scalar @{$face});
+        for my $i (@{$face}) {
 			$dodechedronFacesIdList->InsertNextId($i);
 		}
 	}
-		
+
     my $uGrid = vtk::vtkUnstructuredGrid();
-    $uGrid->insertNextCell(Inline::Python::py_eval("vtk.VTK_POLYHEDRON"), $dodechedronFacesIdList);
+    $uGrid->InsertNextCell(vtk::VTK_POLYHEDRON(), $dodechedronFacesIdList);
     $uGrid->SetPoints($points);
  
     return($uGrid)
 }
- 
+
 sub build_pyramid {
 	# Make a regular square pyramid.
 
-    my $numberOfVertices = 5;
+    my $numberOfVertices = 4;
  
     my $points = vtk::vtkPoints();
- 
-    my @p = [
+
+    my $p = [
          [1.0, 1.0, 0.0],
          [-1.0, 1.0, 0.0],
          [-1.0, -1.0, 0.0],
          [1.0, -1.0, 0.0],
          [0.0, 0.0, 1.0],
 	];
-	
-    for my $pt (@p) {
-		# memory arrangement
-		my @p = [$pt->[0],$pt->[1],$pt->[2]];
+ 	
+    for my $pt (@{$p}) {
+		my @r = (sprintf("%.6f", $pt->[0]),sprintf("%.6f", $pt->[1]),sprintf("%.6f", $pt->[2]));
 		$points->InsertNextPoint($pt->[0], $pt->[1], $pt->[2]);
 	}
  
     my $pyramid = vtk::vtkPyramid();
     for my $i (0 .. $numberOfVertices) {
-		$pyramid->GetPointIds()->SetId($i, $i);
+        $pyramid->GetPointIds()->SetId($i, $i);
 	}
 	
-    my $ug = vtk::vtkUnstructuredGrid();
-    $ug->SetPoints($points);
-    $ug->InsertNextCell($pyramid->GetCellType(), $pyramid->GetPointIds());
+    my $unstructuredGrid = vtk::vtkUnstructuredGrid();
+    $unstructuredGrid->SetPoints($points);
+    $unstructuredGrid->InsertNextCell($pyramid->GetCellType(), $pyramid->GetPointIds());
  
-    return($ug)
+    return($unstructuredGrid)
 }
  
 sub build_tetrahedron {
@@ -230,7 +230,7 @@ sub build_tetrahedron {
  
     my $unstructuredGrid = vtk::vtkUnstructuredGrid();
     $unstructuredGrid->SetPoints($points);
-    $unstructuredGrid->SetCells(Inline::Python::py_eval("vtk.VTK_TETRA"), $cellArray);
+    $unstructuredGrid->SetCells(vtk::VTK_TETRA(), $cellArray);
  
     return($unstructuredGrid);
 }
@@ -327,12 +327,12 @@ sub display_bodies {
     push @uGrids, build_pentagonal_prism;
     push @titles, 'Pentagonal Prism';
  
-    #push @uGrids, build_polyhedron;
-    #push @titles, 'Polyhedron';
-    #push @uGrids, build_pyramid;
-    #push @titles, 'Pyramid';
-    #push @uGrids, build_tetrahedron;
-    #push @titles, 'Tetrahedron';
+    push @uGrids, build_polyhedron;
+    push @titles, 'Polyhedron';
+    push @uGrids, build_pyramid;
+    push @titles, 'Pyramid';
+    push @uGrids, build_tetrahedron;
+    push @titles, 'Tetrahedron';
  
     push @uGrids, build_voxel();
     push @titles, 'Voxel';
@@ -389,7 +389,7 @@ sub display_bodies {
                 ($gridDimensions - $row) * $rendererSize / ($gridDimensions * $rendererSize),
 			];
  
-            if($index > $#actors - 1) {
+            if($index > scalar @actors - 1) {
                 # Add a renderer even if there is no actor.
                 # This makes the render window background all the same color.
                 my $ren = vtk::vtkRenderer();
@@ -397,15 +397,15 @@ sub display_bodies {
                 $ren->SetViewport($viewport);
                 $renWin->AddRenderer($ren);
                 next;
+			} else {			
+				$renderers[$index]->SetViewport($viewport);
+				$renderers[$index]->SetBackground(.2, .3, .4);
+				$renderers[$index]->ResetCamera();
+				$renderers[$index]->GetActiveCamera()->Azimuth(30);
+				$renderers[$index]->GetActiveCamera()->Elevation(-30);
+				$renderers[$index]->GetActiveCamera()->Zoom(0.85);
+				$renderers[$index]->ResetCameraClippingRange(); 
 			}
-			
-			$renderers[$index]->SetViewport($viewport);
-			$renderers[$index]->SetBackground(.2, .3, .4);
-			$renderers[$index]->ResetCamera();
-			$renderers[$index]->GetActiveCamera()->Azimuth(30);
-			$renderers[$index]->GetActiveCamera()->Elevation(-30);
-			$renderers[$index]->GetActiveCamera()->Zoom(0.85);
-			$renderers[$index]->ResetCameraClippingRange(); 
 		}
 	}
 	
