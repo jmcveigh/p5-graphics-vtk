@@ -5,11 +5,8 @@ use warnings;
 
 use feature 'switch';
 
-use constant TYPE_UNDEF => 0;
-use constant TYPE_CONSTANT => 1;
-use constant TYPE_MEMBER => 2;
-use constant PREFIX_CONSTANT => 'VTK_';
-use constant PREFIX_CLASS => 'vtk';
+use constant REGEX_CONSTANT => qr/^VTK_\w+$/;
+use constant REGEX_CLASS => qr/^vtk\w+$/;
 
 use Inline::Python qw(py_eval py_new_object py_call_method py_call_function);
 use Inline Python => Graphics::VTK::PYTHON_VTK1;
@@ -27,10 +24,10 @@ sub AUTOLOAD {
 	my $member = $components[-1];
 	
 	given($member) {
-		when(/^VTK_\w+$/) {
+		when(REGEX_CONSTANT) {
 			return(py_eval("vtk.${call}",0));
 		}
-		when(/^vtk\w+$/) {
+		when(REGEX_CLASS) {
 			my $arg_string = join(',',@arguments);
 			(my $perl_class_suffix = $call) =~ s/\.([^\d])/::$1/;
 			my $perl_class_name = "vtk::${perl_class_suffix}";					

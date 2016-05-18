@@ -383,10 +383,14 @@ sub display_bodies {
             my $index = $row * $gridDimensions + $col;
  
             my $viewport = [
-                $col * $rendererSize / ($gridDimensions * $rendererSize),
-                ($gridDimensions - ($row + 1)) * $rendererSize / ($gridDimensions * $rendererSize),
-                $col + 1 * $rendererSize / ($gridDimensions * $rendererSize),
-                ($gridDimensions - $row) * $rendererSize / ($gridDimensions * $rendererSize),
+                sprintf("%f",$col) * $rendererSize /
+                                     ($gridDimensions * $rendererSize),
+                sprintf("%f",$gridDimensions - ($row + 1)) * $rendererSize /
+                                     ($gridDimensions * $rendererSize),
+                sprintf("%f",$col + 1) * $rendererSize /
+                                     ($gridDimensions * $rendererSize),
+                sprintf("%f",$gridDimensions - $row) * $rendererSize /
+                                     ($gridDimensions * $rendererSize)
 			];
  
             if($index > scalar @actors - 1) {
