@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graphics::VTK qw(:python);
+use Graphics::VTK;
 
 my $sphereSource = vtk::vtkSphereSource();
 $sphereSource->Update();

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graphics::VTK qw(:python);
+use Graphics::VTK;
  
 my $filename = "example2_perl.ply";
  

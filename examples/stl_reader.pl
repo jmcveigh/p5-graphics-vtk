@@ -2,7 +2,7 @@
 use strict;
 use warnings;
  
-use Graphics::VTK qw(:python);
+use Graphics::VTK;
  
 my $filename = "example1_perl.stl";
  

@@ -5,7 +5,7 @@ use warnings;
 
 use feature 'say';
 
-use Graphics::VTK qw(:python);
+use Graphics::VTK;
 
 my ($p0,$p1) = (
 	[0,0,0],

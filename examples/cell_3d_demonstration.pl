@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Inline::Python;
-use Graphics::VTK qw(:python);
+use Graphics::VTK;
  
 sub build_hexagonal_prism() {
     # 3D: hexagonal prism: a wedge with an hexagonal base.
