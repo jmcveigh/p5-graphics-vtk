@@ -1,0 +1,7 @@
+namespace : %
+    classes : %
+    functions : @
+filtered : <<EOV
+import vtk
+from vtk.util.colors import *
+EOV
